@@ -376,7 +376,7 @@ public class Start extends ListenerAdapter {
 			int totalMembers = 0;
 			int totalChannels = 0;
 			int totalBoosts = 0;
-			int totalMods = 0;
+			//int totalMods = 0;
 			for (Guild temp: jda.getGuilds()) {
 				totalMembers += temp.getMemberCount();
 				totalChannels += (temp.getTextChannels().size()+temp.getVoiceChannels().size());
