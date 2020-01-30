@@ -34,10 +34,10 @@ public class BanBuddy implements EventListener{
 				GuildMemberJoinEvent join = (GuildMemberJoinEvent) event;
 				System.out.println("JOIN: "+join.getGuild()+" "+join.getUser().getId());
 				if (Start.BL.contains(join.getUser().getId())) {
-					TextChannel DSC = Start.jda.getTextChannelById("646540745443901472"); //For use in production.
+					//TextChannel DSC = Start.jda.getTextChannelById("646540745443901472"); //For use in production.
 					//TextChannel DSC = jda.getTextChannelById("668964814684422184"); //For use in testing.
 					MessageEmbed embed = new MessageEmbed(null, "Banned User Joined "+join.getGuild().getName(), "Name: "+join.getUser().getAsTag()+"\nID: "+join.getUser().getId()+"\nReason: "+Start.BLR.get(Start.BL.indexOf(join.getUser().getId())), null, OffsetDateTime.now(), 0xF40C0C, new Thumbnail(join.getUser().getEffectiveAvatarUrl(), null, 128, 128), null, new AuthorInfo("", null, "", null), null, new Footer("DSC Bot | Powered By Tfinnm Development", "https://cdn.discordapp.com/attachments/646540745443901472/668954814285217792/1920px-Boy_Scouts_of_the_United_Nations.png", null), null, null);
-					DSC.sendMessage(embed).queue();
+					join.getGuild().getSystemChannel().sendMessage(embed).queue();
 				}
 				if (Start.AL.contains(join.getUser().getId())) {
 					TextChannel DSC = Start.jda.getTextChannelById("646540745443901472"); //For use in production.
