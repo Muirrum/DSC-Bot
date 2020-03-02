@@ -36,15 +36,37 @@ public class Start extends ListenerAdapter {
 	public static boolean memeMode = false;
 	public static void main(String[] args) {
 		try {
-			getBans();
-			getAdvisories();
-			jda = new JDABuilder(Token.token).addEventListeners(new Start()).addEventListeners(new BanBuddy()).setActivity(Activity.watching("DSC Member Servers")).setStatus(OnlineStatus.ONLINE).build();
-			jda.awaitReady();
+			fullReload();
+			loadJDA();
+			reload();
 			System.out.println("READY!");
 		} catch (LoginException | InterruptedException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	private static void loadJDA() throws LoginException, InterruptedException {
+		jda = new JDABuilder(Token.token).addEventListeners(new Start()).addEventListeners(new BanBuddy()).setActivity(Activity.watching("DSC Member Servers")).setStatus(OnlineStatus.ONLINE).build();
+		jda.awaitReady();
+	}
+	
+	private static void fullReload() throws IOException {
+		getBans();
+		getAdvisories();
+	}
+	
+	private static void reload() {
+		for(Guild temp: jda.getGuilds()) {
+			temp.getSelfMember().modifyNickname("DSC Bot");
+			List<Ban> bans = temp.retrieveBanList().complete();
+			for(Ban temp2: bans) {
+				addBan(temp2.getUser().getId(), temp2.getReason());
+			}
+		}
+		TextChannel DSC = jda.getTextChannelById("668964814684422184"); //For use in testing.
+		MessageEmbed embed = new MessageEmbed(null, "Service Online!", "Shard: "+jda.getShardInfo().getShardId()+"/"+jda.getShardInfo().getShardTotal()+"\nPing"+jda.getGatewayPing(), null, OffsetDateTime.now(), 0xF40C0C, new Thumbnail("https://cdn.discordapp.com/attachments/646540745443901472/668954814285217792/1920px-Boy_Scouts_of_the_United_Nations.png", null, 128, 128), null, new AuthorInfo("", null, "", null), null, new Footer("DSC Bot | Powered By Tfinnm Development", "https://cdn.discordapp.com/attachments/646540745443901472/668954814285217792/1920px-Boy_Scouts_of_the_United_Nations.png", null), null, null);
+		DSC.sendMessage(embed).queue();
 	}
 
 	@Override
@@ -105,6 +127,73 @@ public class Start extends ListenerAdapter {
 		else if (msg.toLowerCase().contains("oof") && memeMode)  
 		{
 			channel.sendMessage("stop.").queue();
+		}
+		else if (msg.equals("\\\\reload"))
+		{
+			reload();
+		}
+		else if (msg.equals("\\\\performance")) 
+		{
+			String out = "";
+			long r = jda.getResponseTotal();
+			if (r/1000 < 1) {
+				out = "error probability: none";
+				out += "\n";
+				for (int i = 0; i < r/100; i++) {
+					out += "█";
+				}
+				for (int i = 10; i > r/100; i--) {
+					out += "░";
+				}
+			} else if (r/10000 < 1) {
+				out = "error probability: low";
+				out += "\n";
+				for (int i = 0; i < r/1000; i++) {
+					out += "█";
+				}
+				for (int i = 10; i > r/1000; i--) {
+					out += "░";
+				}
+			} else if (r/100000 < 1) {
+				out = "error probability: medium";
+				out += "\n";
+				for (int i = 0; i < r/10000; i++) {
+					out += "█";
+				}
+				for (int i = 10; i > r/10000; i--) {
+					out += "░";
+				}
+			} else if (r/1000000 < 1) {
+				out = "error probability: high";
+				out += "\n";
+				for (int i = 0; i < r/100000; i++) {
+					out += "█";
+				}
+				for (int i = 10; i > r/100000; i--) {
+					out += "░";
+				}
+			} else if (r/10000000 < 1) {
+				out = "error probability: urgent";
+				out += "\n";
+				for (int i = 0; i < r/1000000; i++) {
+					out += "█";
+				}
+				for (int i = 10; i > r/1000000; i--) {
+					out += "░";
+				}
+			} else if (r/100000000 < 1) {
+				out = "error probability: critical";
+				out += "\n";
+				for (int i = 0; i < r/10000000; i++) {
+					out += "█";
+				}
+				for (int i = 10; i > r/10000000; i--) {
+					out += "░";
+				}
+			} else {
+				out = "Please Restart Now.";
+			}
+			channel.sendMessage(out).queue();
 		}
 		else if (msg.equals("\\\\syncbans")) 
 		{
