@@ -90,7 +90,7 @@ public class Start extends ListenerAdapter {
 		}
 
 		//Begin CMD parsing
-		if (msg.equals("!ping"))
+		if (msg.equals("\\\\ping"))
 		{
 			channel.sendMessage("Bot Online. :)").queue();
 		}
@@ -106,7 +106,7 @@ public class Start extends ListenerAdapter {
 		{
 			channel.sendMessage("stop.").queue();
 		}
-		else if (msg.equals("!syncbans")) 
+		else if (msg.equals("\\\\syncbans")) 
 		{
 			if (message.isFromType(ChannelType.TEXT))
 			{
@@ -122,27 +122,27 @@ public class Start extends ListenerAdapter {
 				channel.sendMessage("This is a Guild-Only command!").queue();
 			}
 		}
-		else if (msg.contentEquals("!help")) {
+		else if (msg.contentEquals("\\\\help")) {
 			List<Field> cmds = new ArrayList<Field>();
-			cmds.add(new Field("!advise <@user>", "Issues a warning about a user to all DSC member servers.", false));
-			cmds.add(new Field("!purge <#>", "Removes selected numer of messages.", false));
-			cmds.add(new Field("!raid", "Locks down server and alerts all DSC member servers.", false));
-			cmds.add(new Field("!clearBan", "Removes a user from the blacklist; User remains banned where already banned.", false));
-			cmds.add(new Field("!syncbans", "Sends contents of banlist to blacklist server.", false));
-			cmds.add(new Field("!checkbans", "Checks blacklist server for members in your server and warns you.", false));
-			cmds.add(new Field("!checkAdvisories", "Checks advisory list for members in your server and warns you.", false));
-			cmds.add(new Field("!runUser <tag>", "Information about a user, includes search of advisories and blacklist", false));
-			cmds.add(new Field("!setbanreason", "Change the reason for a ban.", false));
-			cmds.add(new Field("!setadvisoryreason", "Change the reason for an advisory.", false));
+			cmds.add(new Field("\\\\advise <@user>", "Issues a warning about a user to all DSC member servers.", false));
+			cmds.add(new Field("\\\\purge <#>", "Removes selected numer of messages.", false));
+			cmds.add(new Field("\\\\raid", "Locks down server and alerts all DSC member servers.", false));
+			cmds.add(new Field("\\\\clearBan", "Removes a user from the blacklist; User remains banned where already banned.", false));
+			cmds.add(new Field("\\\\syncbans", "Sends contents of banlist to blacklist server.", false));
+			cmds.add(new Field("\\\\checkbans", "Checks blacklist server for members in your server and warns you.", false));
+			cmds.add(new Field("\\\\checkAdvisories", "Checks advisory list for members in your server and warns you.", false));
+			cmds.add(new Field("\\\\runUser <tag>", "Information about a user, includes search of advisories and blacklist", false));
+			cmds.add(new Field("\\\\setbanreason", "Change the reason for a ban.", false));
+			cmds.add(new Field("\\\\setadvisoryreason", "Change the reason for an advisory.", false));
 			cmds.add(new Field("On Ban", "Users are automatically added to the blaklist server when banned", false));
 			cmds.add(new Field("On Join", "Users are automatically checked against the blacklist/advisory list when they join.", false));
-			cmds.add(new Field("!stats", "Mostly useless statistics about DSC and DSC bot.", false));
-			cmds.add(new Field("!serverstats", "Statistics about the server.", false));
-			cmds.add(new Field("!servers", "List of DSC servers with invite links.", false));
+			cmds.add(new Field("\\\\stats", "Mostly useless statistics about DSC and DSC bot.", false));
+			cmds.add(new Field("\\\\serverstats", "Statistics about the server.", false));
+			cmds.add(new Field("\\\\servers", "List of DSC servers with invite links.", false));
 			MessageEmbed embed = new MessageEmbed(null, "About DSC and DSC Bot!", "Discord Scout Council, or DSC for short is a coalition of scouting servers which work together to improve their servers and keep members safe. Have a server and want to join? Contact a mod of a member server and they can bring your server up for consideration. DSC Bot is exclusive to DSC member servers and offers member protections such as raid mode and an optional shared ban list.", null, null, 0, new Thumbnail("https://cdn.discordapp.com/attachments/646540745443901472/668954814285217792/1920px-Boy_Scouts_of_the_United_Nations.png", null, 128, 128), null, new AuthorInfo("", null, "", null), null, new Footer("DSC Bot 2.0.0r Build Date: 1/23/2020| Powered By Tfinnm Development", "https://cdn.discordapp.com/attachments/646540745443901472/668954814285217792/1920px-Boy_Scouts_of_the_United_Nations.png", null), null,cmds);
 			channel.sendMessage(embed).queue();
 		}
-		else if (msg.equals("!checkbans"))
+		else if (msg.equals("\\\\checkbans"))
 		{
 			if (message.isFromType(ChannelType.TEXT))
 			{
@@ -165,7 +165,7 @@ public class Start extends ListenerAdapter {
 				channel.sendMessage("This is a Guild-Only command!").queue();
 			}
 		}
-		else if (msg.startsWith("!setbanreason"))
+		else if (msg.startsWith("\\\\setbanreason"))
 		{
 			if (message.isFromType(ChannelType.TEXT))
 			{
@@ -188,7 +188,7 @@ public class Start extends ListenerAdapter {
 				channel.sendMessage("This is a Guild-Only command!").queue();
 			}
 		}
-		else if (msg.startsWith("!setadvisoryreason"))
+		else if (msg.startsWith("\\\\setadvisoryreason"))
 		{
 			if (message.isFromType(ChannelType.TEXT))
 			{
@@ -211,7 +211,7 @@ public class Start extends ListenerAdapter {
 				channel.sendMessage("This is a Guild-Only command!").queue();
 			}
 		}
-		else if (msg.equals("!checkAdvisories"))
+		else if (msg.equals("\\\\checkAdvisories"))
 		{
 			if (message.isFromType(ChannelType.TEXT))
 			{
@@ -234,7 +234,7 @@ public class Start extends ListenerAdapter {
 				channel.sendMessage("This is a Guild-Only command!").queue();
 			}
 		}
-		else if (msg.startsWith("!clearBan"))
+		else if (msg.startsWith("\\\\clearBan"))
 		{
 			if (message.isFromType(ChannelType.TEXT))
 			{
@@ -260,7 +260,7 @@ public class Start extends ListenerAdapter {
 				channel.sendMessage("This is a Guild-Only command!").queue();
 			}
 		}
-		else if (msg.startsWith("!clearBanID"))
+		else if (msg.startsWith("\\\\clearBanID"))
 		{
 			if (message.isFromType(ChannelType.TEXT))
 			{
@@ -284,7 +284,7 @@ public class Start extends ListenerAdapter {
 				channel.sendMessage("This is a Guild-Only command!").queue();
 			}
 		}
-		else if (msg.startsWith("!clearAdvisory"))
+		else if (msg.startsWith("\\\\clearAdvisory"))
 		{
 			if (message.isFromType(ChannelType.TEXT))
 			{
@@ -310,7 +310,7 @@ public class Start extends ListenerAdapter {
 				channel.sendMessage("This is a Guild-Only command!").queue();
 			}
 		}
-		else if (msg.startsWith("!clearAdvisoryID"))
+		else if (msg.startsWith("\\\\clearAdvisoryID"))
 		{
 			if (message.isFromType(ChannelType.TEXT))
 			{
@@ -334,7 +334,7 @@ public class Start extends ListenerAdapter {
 				channel.sendMessage("This is a Guild-Only command!").queue();
 			}
 		}
-		else if (msg.startsWith("!activateMemeMode"))
+		else if (msg.startsWith("\\\\activateMemeMode"))
 		{
 			if (message.getMember().getId().equals("213319973756600322")) {
 				memeMode = true;
@@ -343,7 +343,7 @@ public class Start extends ListenerAdapter {
 				channel.sendMessage("You are not authorized to do this on this server. [Tfinnm#8609 required]").queue();
 			}
 		}
-		else if (msg.startsWith("!iHazRegerts"))   
+		else if (msg.startsWith("\\\\iHazRegerts"))   
 		{
 			if (message.getMember().getId().equals("213319973756600322")) {
 				memeMode = false;
@@ -352,7 +352,7 @@ public class Start extends ListenerAdapter {
 				channel.sendMessage("You are not authorized to do this on this server. [Tfinnm#8609 required]").queue();
 			}
 		}
-		else if (msg.startsWith("!purge"))   //Note, I used "startsWith, not equals.
+		else if (msg.startsWith("\\\\purge"))   //Note, I used "startsWith, not equals.
 		{
 			if (message.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
 				int num = Integer.parseInt(msg.split(" ")[1]);
@@ -370,7 +370,7 @@ public class Start extends ListenerAdapter {
 				channel.sendMessage("You are not authorized to do this on this server. [MESSAGE_MANAGE permission required]").queue();
 			}
 		}
-		else if (msg.contentEquals("!stats")) {
+		else if (msg.contentEquals("\\\\stats")) {
 			List<Field> cmds = new ArrayList<Field>();
 			cmds.add(new Field("Servers", String.valueOf(jda.getGuilds().size()), false));
 			int totalMembers = 0;
@@ -395,7 +395,7 @@ public class Start extends ListenerAdapter {
 			MessageEmbed embed = new MessageEmbed(null, "Random DSC Bot Statistics", "", null, null, 0, new Thumbnail("https://cdn.discordapp.com/attachments/646540745443901472/668954814285217792/1920px-Boy_Scouts_of_the_United_Nations.png", null, 128, 128), null, new AuthorInfo("", null, "", null), null, new Footer("DSC Bot | Powered By Tfinnm Development", "https://cdn.discordapp.com/attachments/646540745443901472/668954814285217792/1920px-Boy_Scouts_of_the_United_Nations.png", null), null,cmds);
 			channel.sendMessage(embed).queue();
 		}
-		else if (msg.contentEquals("!serverstats")) {
+		else if (msg.contentEquals("\\\\serverstats")) {
 			List<Field> cmds = new ArrayList<Field>();
 			Guild curserver = message.getGuild();
 			cmds.add(new Field("Name", curserver.getName(), true));
@@ -409,7 +409,7 @@ public class Start extends ListenerAdapter {
 			MessageEmbed embed = new MessageEmbed(null, "Server Statistics", "", null, null, 0, new Thumbnail(message.getGuild().getIconUrl(), null, 128, 128), null, new AuthorInfo("", null, "", null), null, new Footer("DSC Bot | Powered By Tfinnm Development", "https://cdn.discordapp.com/attachments/646540745443901472/668954814285217792/1920px-Boy_Scouts_of_the_United_Nations.png", null), null,cmds);
 			channel.sendMessage(embed).queue();
 		}
-		else if (msg.startsWith("!runUser")) {
+		else if (msg.startsWith("\\\\runUser")) {
 			List<Field> cmds = new ArrayList<Field>();
 			List<User> mentionedUsers = message.getMentionedUsers();
 			for (User curruser : mentionedUsers) {
@@ -440,7 +440,7 @@ public class Start extends ListenerAdapter {
 				channel.sendMessage(embed).queue();
 			}
 		}
-		else if (msg.contentEquals("!servers")) {
+		else if (msg.contentEquals("\\\\servers")) {
 			List<Field> cmds = new ArrayList<Field>();
 			for(Guild tempguild: jda.getGuilds()) {
 				if ((!tempguild.getId().equals("646540745443901469"))&&(!tempguild.getId().equals("634847034930626561"))) {
@@ -450,7 +450,7 @@ public class Start extends ListenerAdapter {
 			MessageEmbed embed = new MessageEmbed(null, "DSC Member Servers", "Run a server that's intrested in joining? Contact a mod of any of these servers for more information.", null, null, 0, new Thumbnail("https://cdn.discordapp.com/attachments/646540745443901472/668954814285217792/1920px-Boy_Scouts_of_the_United_Nations.png", null, 128, 128), null, new AuthorInfo("", null, "", null), null, new Footer("DSC Bot | Powered By Tfinnm Development", "https://cdn.discordapp.com/attachments/646540745443901472/668954814285217792/1920px-Boy_Scouts_of_the_United_Nations.png", null), null,cmds);
 			channel.sendMessage(embed).queue();
 		}
-		else if (msg.startsWith("!advise"))   //Note, I used "startsWith, not equals.
+		else if (msg.startsWith("\\\\advise"))   //Note, I used "startsWith, not equals.
 		{
 			if (message.isFromType(ChannelType.TEXT))
 			{
@@ -491,7 +491,7 @@ public class Start extends ListenerAdapter {
 				channel.sendMessage("This is a Guild-Only command!").queue();
 			}
 		}
-		else if (msg.startsWith("!raid"))   //Note, I used "startsWith, not equals.
+		else if (msg.startsWith("\\\\raid"))   //Note, I used "startsWith, not equals.
 		{
 			if (message.isFromType(ChannelType.TEXT))
 			{
@@ -524,7 +524,7 @@ public class Start extends ListenerAdapter {
 				channel.sendMessage("This is a Guild-Only command!").queue();
 			}
 		}
-		else if (msg.startsWith("!unraid"))   //Note, I used "startsWith, not equals.
+		else if (msg.startsWith("\\\\unraid"))   //Note, I used "startsWith, not equals.
 		{
 			if (message.isFromType(ChannelType.TEXT))
 			{
