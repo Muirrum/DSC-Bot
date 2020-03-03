@@ -32,12 +32,15 @@ public class Start extends ListenerAdapter {
 	public static String[] AdvisoryList;
 	public static ArrayList<String> AL;
 	public static ArrayList<String> ALR;
+	public static ArrayList<String> AgeL;
+	public static ArrayList<String> msged;
 	static JDA jda;
 	public static boolean memeMode = false;
 	public static void main(String[] args) {
 		try {
 			fullReload();
 			loadJDA();
+			System.out.println("READY!");
 			reload();
 			System.out.println("READY!");
 		} catch (LoginException | InterruptedException | IOException e) {
@@ -45,17 +48,19 @@ public class Start extends ListenerAdapter {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private static void loadJDA() throws LoginException, InterruptedException {
 		jda = new JDABuilder(Token.token).addEventListeners(new Start()).addEventListeners(new BanBuddy()).setActivity(Activity.watching("DSC Member Servers")).setStatus(OnlineStatus.ONLINE).build();
 		jda.awaitReady();
 	}
-	
+
 	private static void fullReload() throws IOException {
 		getBans();
 		getAdvisories();
+		getAges();
+		getUsers();
 	}
-	
+
 	private static void reload() {
 		for(Guild temp: jda.getGuilds()) {
 			temp.getSelfMember().modifyNickname("DSC Bot");
@@ -63,9 +68,33 @@ public class Start extends ListenerAdapter {
 			for(Ban temp2: bans) {
 				addBan(temp2.getUser().getId(), temp2.getReason());
 			}
+			List<Member> memberlist = temp.getMembers();
+			for(Member temp3: memberlist) {
+				System.out.println("Checking member age of "+temp3.getAsMention());
+				boolean ageVerified = false;
+				for (String temp4: AgeL) {
+					if (temp4.startsWith(temp3.getUser().getId())) {
+						ageVerified = true;
+					}
+				}
+				if (!ageVerified) {
+					if (temp3.getUser().getId().equals("213319973756600322")) {
+						if (!msged.contains(temp3.getUser().getId())) {
+							msged.add(temp3.getUser().getId());
+							addUser(temp3.getUser().getId());
+
+							PrivateChannel pc = temp3.getUser().openPrivateChannel().complete();
+							Message msg = pc.sendMessage("Howdy! You just joined a DSC member server (or already did and never received this message). DSC is a network of scouting servers which work together to provide a better and safer expirience for their members. As part of this mission, member servers enforce BSA's Youth Protection Guidelines, and to assist in doing so, many servers allow members to self identify as over or under 18. In an attempt to consodidate this, you may do this here by selecting ➖ for under 18 or ➕ for over 18.").complete();
+							pc.addReactionById(msg.getId(), "➕").queue();
+							pc.addReactionById(msg.getId(), "➖").queue();
+							pc.pinMessageById(msg.getId());
+						}
+					}
+				}
+			}
 		}
 		TextChannel DSC = jda.getTextChannelById("668964814684422184"); //For use in testing.
-		MessageEmbed embed = new MessageEmbed(null, "Service Online!", "Shard: "+jda.getShardInfo().getShardId()+"/"+jda.getShardInfo().getShardTotal()+"\nPing"+jda.getGatewayPing(), null, OffsetDateTime.now(), 0xF40C0C, new Thumbnail("https://cdn.discordapp.com/attachments/646540745443901472/668954814285217792/1920px-Boy_Scouts_of_the_United_Nations.png", null, 128, 128), null, new AuthorInfo("", null, "", null), null, new Footer("DSC Bot | Powered By Tfinnm Development", "https://cdn.discordapp.com/attachments/646540745443901472/668954814285217792/1920px-Boy_Scouts_of_the_United_Nations.png", null), null, null);
+		MessageEmbed embed = new MessageEmbed(null, "Service Online!", "Shard: "+jda.getShardInfo().getShardId()+"/"+jda.getShardInfo().getShardTotal()+"\nPing: "+jda.getGatewayPing(), null, OffsetDateTime.now(), 0x33cc33, new Thumbnail("https://cdn.discordapp.com/attachments/646540745443901472/668954814285217792/1920px-Boy_Scouts_of_the_United_Nations.png", null, 128, 128), null, new AuthorInfo("", null, "", null), null, new Footer("DSC Bot | Powered By Tfinnm Development", "https://cdn.discordapp.com/attachments/646540745443901472/668954814285217792/1920px-Boy_Scouts_of_the_United_Nations.png", null), null, null);
 		DSC.sendMessage(embed).queue();
 	}
 
@@ -83,7 +112,6 @@ public class Start extends ListenerAdapter {
 
 		String msg = message.getContentDisplay();       
 
-		boolean bot = author.isBot();                   
 
 		if (event.isFromType(ChannelType.TEXT))
 		{
@@ -106,8 +134,6 @@ public class Start extends ListenerAdapter {
 		}
 		else if (event.isFromType(ChannelType.PRIVATE)) 
 		{
-			PrivateChannel privateChannel = event.getPrivateChannel();
-
 			System.out.printf("[PRIV]<%s>: %s\n", author.getName(), msg);
 		}
 
@@ -130,7 +156,17 @@ public class Start extends ListenerAdapter {
 		}
 		else if (msg.equals("\\\\reload"))
 		{
-			reload();
+			if (message.getMember().getId().equals("213319973756600322")) {
+				try {
+					fullReload();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				reload();
+			} else {
+				channel.sendMessage("You are not authorized to do this on this server. [Tfinnm#8609 required]").queue();
+			}
 		}
 		else if (msg.equals("\\\\performance")) 
 		{
@@ -769,6 +805,32 @@ public class Start extends ListenerAdapter {
 		}
 	}
 
+	public static void setAge(String ID,String s) {
+		try {//646545388576178178
+			BufferedReader file = new BufferedReader(new FileReader("age.DSC"));
+			StringBuffer inputBuffer = new StringBuffer();
+			String line;
+
+			while ((line = file.readLine()) != null) {
+				if (!line.startsWith(ID)) {
+					inputBuffer.append(line);
+					inputBuffer.append('\n');
+				}
+			}
+			inputBuffer.append(ID+s);
+			AgeL.add(ID+s);
+			file.close();
+
+			// write the new string with the replaced line OVER the same file
+			FileOutputStream fileOut = new FileOutputStream("age.DSC");
+			fileOut.write(inputBuffer.toString().getBytes());
+			fileOut.close();
+
+		} catch (Exception e) {
+			System.out.println("Problem reading file.");
+		}
+	}
+
 	public static void removeAdvisory(String ID) {
 		try {//646545388576178178
 			BufferedReader file = new BufferedReader(new FileReader("AL.DSC"));
@@ -792,6 +854,59 @@ public class Start extends ListenerAdapter {
 			System.out.println("Problem reading file.");
 		}
 	}
+
+	static void getAges() throws IOException {
+		File file = new File("age.DSC"); 
+
+		BufferedReader br = new BufferedReader(new FileReader(file)); 
+		AgeL = new ArrayList<String>();
+		String st; 
+		while ((st = br.readLine()) != null) {
+			System.out.println(st);
+			AgeL.add(st);
+		}
+		br.close();
+	}
+	static void getUsers() throws IOException {
+		File file = new File("users.DSC"); 
+
+		BufferedReader br = new BufferedReader(new FileReader(file)); 
+		msged = new ArrayList<String>();
+		String st; 
+		while ((st = br.readLine()) != null) {
+			System.out.println(st);
+			msged.add(st);
+		}
+		br.close();
+	}
+	
+	public static void addUser(String ID) {
+		try {//646545388576178178
+			BufferedReader file = new BufferedReader(new FileReader("users.DSC"));
+			StringBuffer inputBuffer = new StringBuffer();
+			String line;
+
+			while ((line = file.readLine()) != null) {
+				if (!line.equals(ID)) {
+					inputBuffer.append(line);
+					inputBuffer.append('\n');
+				}
+			}
+			inputBuffer.append(ID);
+			AgeL.add(ID);
+			file.close();
+
+			// write the new string with the replaced line OVER the same file
+			FileOutputStream fileOut = new FileOutputStream("users.DSC");
+			fileOut.write(inputBuffer.toString().getBytes());
+			fileOut.close();
+
+		} catch (Exception e) {
+			System.out.println("Problem reading file.");
+		}
+	}
+
+
 
 
 }
