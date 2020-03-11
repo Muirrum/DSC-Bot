@@ -22,3 +22,6 @@
 hs_err_pid*
 src/Token.java
 *.DSC
+*.png
+*.mp3
+*.jpg

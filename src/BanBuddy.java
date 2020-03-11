@@ -1,28 +1,25 @@
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
-import net.dv8tion.jda.api.entities.ChannelType;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.MessageEmbed.AuthorInfo;
-import net.dv8tion.jda.api.entities.MessageEmbed.Footer;
-import net.dv8tion.jda.api.entities.MessageEmbed.Thumbnail;
-import net.dv8tion.jda.api.entities.MessageReaction.ReactionEmote;
-import net.dv8tion.jda.api.entities.PrivateChannel;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Message.Attachment;
+import net.dv8tion.jda.api.entities.MessageEmbed.*;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.guild.GuildBanEvent;
-import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
-import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
+import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
 
 public class BanBuddy implements EventListener{
 	@Override
 	public void onEvent(GenericEvent event)
 	{
+		//System.out.print(event.toString());
 		if(event instanceof GuildBanEvent) {
 			GuildBanEvent ban = (GuildBanEvent) event;
 			System.out.println("BAN: "+ban.getGuild()+" "+ban.getUser().getId());
@@ -68,24 +65,124 @@ public class BanBuddy implements EventListener{
 						Start.msged.add(join.getUser().getId());
 						Start.addUser(join.getUser().getId());
 						PrivateChannel pc = join.getUser().openPrivateChannel().complete();
-						Message msg = pc.sendMessage("Howdy! You just joined a DSC member server (or already did and never received this message). DSC is a network of scouting servers which work together to provide a better and safer expirience for their members. As part of this mission, member servers enforce BSA's Youth Protection Guidelines, and to assist in doing so, many servers allow members to self identify as over or under 18. In an attempt to consodidate this, you may do this here by selecting - for under 18 or + for over 18.").complete();
+						Message msg = pc.sendMessage("Howdy! You just joined a DSC member server (or already did and never received this message). DSC is a network of scouting servers which work together to provide a better and safer expirience for their members. As part of this mission, member servers enforce BSA's Youth Protection Guidelines, and to assist in doing so, many servers allow members to self identify as over or under 18. In an attempt to consodidate this, you may do this here by selecting - for under 18 or + for over 18.\nIf you don't receive a confirmation after selecting one, please type `\\\\age`").complete();
 						pc.addReactionById(msg.getId(), "➕").queue();
 						pc.addReactionById(msg.getId(), "➖").queue();
-						pc.pinMessageById(msg.getId());
+						pc.pinMessageById(msg.getId()).queue();
 					}
 				}
 			}
-		} else if (event instanceof MessageReactionAddEvent) {
-			MessageReactionAddEvent react = (MessageReactionAddEvent) event;
-			if (react.getChannel().getType().equals(ChannelType.PRIVATE)) {
-				if (!react.getUser().isBot()) {
-					String id = react.getMember().getId();
-					if (react.getReactionEmote().isEmoji() && react.getReactionEmote().getEmoji().equals("➕")) {
-						Start.setAge(id, "+");
+		} else if (event instanceof PrivateMessageReceivedEvent) {
+			PrivateMessageReceivedEvent post = (PrivateMessageReceivedEvent) event;
+			//if (!Start.blocked.contains(post.getAuthor().getId())) {
+				List<Attachment> imgs = post.getMessage().getAttachments();
+				if (imgs.size() > 0) {
+					for (Attachment img: imgs) {
+						TextChannel DSC = Start.jda.getTextChannelById("684577265425973285"); //For use in production.
+						//TextChannel DSC = jda.getTextChannelById("668964814684422184"); //For use in testing.
+						try {
+							Message msg = DSC.sendMessage(post.getAuthor().getId()).addFile(img.downloadToFile().get()).complete();
+							DSC.addReactionById(msg.getId(), "🦅").queue(); //Eagle
+							DSC.addReactionById(msg.getId(), "⛰").queue(); //Summit/Silver
+							DSC.addReactionById(msg.getId(), "🏕").queue(); //Camp Staff
+							DSC.addReactionById(msg.getId(), "🛂").queue(); //YPT
+							DSC.addReactionById(msg.getId(), "↗").queue(); //OA ordeal
+							DSC.addReactionById(msg.getId(), "🟥").queue(); //OA brotherhood
+							DSC.addReactionById(msg.getId(), "🔺").queue(); //OA vigil
+							DSC.addReactionById(msg.getId(), "❌").queue(); //close ticket, Do not move past here
+							DSC.addReactionById(msg.getId(), "⚠").queue(); //issue warning
+							DSC.addReactionById(msg.getId(), "⛔").queue(); //block from eVerify
+						} catch (InterruptedException | ExecutionException e) {
+						}
+						post.getChannel().sendMessage("[Verify] Opened Request.");
 					}
-					if (react.getReactionEmote().isEmoji() && react.getReactionEmote().getEmoji().equals("➖")) {
-						Start.setAge(id, "-");
-					}
+				}
+			//}
+		} else if (event instanceof PrivateMessageReactionAddEvent) {
+			PrivateMessageReactionAddEvent react = (PrivateMessageReactionAddEvent) event;
+			System.out.print("react");
+			if (!react.getUser().isBot()) {
+				String id = react.getChannel().getUser().getId();
+				System.out.print(react.getReactionEmote().isEmoji());
+				if (react.getReactionEmote().isEmoji() && react.getReactionEmote().getEmoji().equals("➕")) {
+					Start.setAge(id, "+");
+					System.out.print(Start.AgeL);
+					react.getChannel().sendMessage("Set age as over 18.").queue();
+				}
+				if (react.getReactionEmote().isEmoji() && react.getReactionEmote().getEmoji().equals("➖")) {
+					Start.setAge(id, "-");
+					System.out.print(Start.AgeL);
+					react.getChannel().sendMessage("Set age as under 18.").queue();
+				}
+			}
+		} else if (event instanceof GuildMessageReactionAddEvent) {
+			GuildMessageReactionAddEvent react = (GuildMessageReactionAddEvent) event;
+			if (react.getChannel().getId().equals("684577265425973285"))
+				System.out.print("reactDSC");
+			if (!react.getUser().isBot()) {
+				if (react.getReactionEmote().isEmoji() && react.getReactionEmote().getEmoji().equals("🦅")) {
+					String usrid = react.getChannel().retrieveMessageById(react.getMessageId()).complete().getContentDisplay();
+					Start.verify(usrid, "eagle.DSC", new ArrayList<String>());
+					PrivateChannel pc = Start.jda.getUserById(usrid).openPrivateChannel().complete();
+					pc.sendMessage("[Verify] Granted \"Eagle\".").queue();
+				}
+				if (react.getReactionEmote().isEmoji() && react.getReactionEmote().getEmoji().equals("⛰")) {
+					String usrid = react.getChannel().retrieveMessageById(react.getMessageId()).complete().getContentDisplay();
+					Start.verify(usrid, "summit.DSC", new ArrayList<String>());
+					PrivateChannel pc = Start.jda.getUserById(usrid).openPrivateChannel().complete();
+					pc.sendMessage("[Verify] Granted \"Summit\".").queue();
+				}
+				if (react.getReactionEmote().isEmoji() && react.getReactionEmote().getEmoji().equals("🏕")) {
+					String usrid = react.getChannel().retrieveMessageById(react.getMessageId()).complete().getContentDisplay();
+					Start.verify(usrid, "Camp Staff.DSC", new ArrayList<String>());
+					PrivateChannel pc = Start.jda.getUserById(usrid).openPrivateChannel().complete();
+					pc.sendMessage("[Verify] Granted \"Camp Staff\".").queue();
+				}
+				if (react.getReactionEmote().isEmoji() && react.getReactionEmote().getEmoji().equals("🛂")) {
+					String usrid = react.getChannel().retrieveMessageById(react.getMessageId()).complete().getContentDisplay();
+					Start.verify(usrid, "YPT.DSC", new ArrayList<String>());
+					PrivateChannel pc = Start.jda.getUserById(usrid).openPrivateChannel().complete();
+					pc.sendMessage("[Verify] Granted \"YPT\".").queue();
+				}
+				if (react.getReactionEmote().isEmoji() && react.getReactionEmote().getEmoji().equals("↗")) {
+					String usrid = react.getChannel().retrieveMessageById(react.getMessageId()).complete().getContentDisplay();
+					Start.verify(usrid, "ordeal.DSC", new ArrayList<String>());
+					PrivateChannel pc = Start.jda.getUserById(usrid).openPrivateChannel().complete();
+					pc.sendMessage("[Verify] Granted \"Ordeal\".").queue();
+				}
+				if (react.getReactionEmote().isEmoji() && react.getReactionEmote().getEmoji().equals("🟥")) {
+					String usrid = react.getChannel().retrieveMessageById(react.getMessageId()).complete().getContentDisplay();
+					Start.verify(usrid, "brotherhood.DSC", new ArrayList<String>());
+					PrivateChannel pc = Start.jda.getUserById(usrid).openPrivateChannel().complete();
+					pc.sendMessage("[Verify] Granted \"Brotherhood\".").queue();
+				}
+				if (react.getReactionEmote().isEmoji() && react.getReactionEmote().getEmoji().equals("🔺")) {
+					String usrid = react.getChannel().retrieveMessageById(react.getMessageId()).complete().getContentDisplay();
+					Start.verify(usrid, "vigil.DSC", new ArrayList<String>());
+					PrivateChannel pc = Start.jda.getUserById(usrid).openPrivateChannel().complete();
+					pc.sendMessage("[Verify] Granted \"Vigil\".").queue();
+				}
+				if (react.getReactionEmote().isEmoji() && react.getReactionEmote().getEmoji().equals("❌")) {
+					String usrid = react.getChannel().retrieveMessageById(react.getMessageId()).complete().getContentDisplay();
+					PrivateChannel pc = Start.jda.getUserById(usrid).openPrivateChannel().complete();
+					react.getChannel().deleteMessageById(react.getMessageId()).queue();
+					pc.sendMessage("[Verify] Request Closed.").queue();
+				}
+				if (react.getReactionEmote().isEmoji() && react.getReactionEmote().getEmoji().equals("⚠") && react.getUserId().equals("213319973756600322")) {
+					String usrid = react.getChannel().retrieveMessageById(react.getMessageId()).complete().getContentDisplay();
+					PrivateChannel pc = Start.jda.getUserById(usrid).openPrivateChannel().complete();
+					react.getChannel().deleteMessageById(react.getMessageId()).queue();
+					pc.sendMessage("[Verify] ⚠ Your request was flagged by a moderator.").queue();
+				}
+				if (react.getReactionEmote().isEmoji() && react.getReactionEmote().getEmoji().equals("⛔") && react.getUserId().equals("213319973756600322")) {
+					String usrid = react.getChannel().retrieveMessageById(react.getMessageId()).complete().getContentDisplay();
+					Start.verify(usrid, "block.DSC", Start.blocked);
+					Start.addAdvisory(usrid, "Abuse of the verification system.");
+					Start.AL.add(usrid);
+					Start.ALR.add("Abuse of the verification system.");
+					PrivateChannel pc = Start.jda.getUserById(usrid).openPrivateChannel().complete();
+					react.getChannel().deleteMessageById(react.getMessageId()).queue();
+					pc.sendMessage("[Verify] ⚠ Your account has been suspended from the verification system.\n\n**Server moderators cannot asist you with this.**\nIf you beleive this was in error, please ask a mod to direct you to a verification system moderator.").queue();
 				}
 			}
 		}

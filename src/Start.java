@@ -34,6 +34,7 @@ public class Start extends ListenerAdapter {
 	public static ArrayList<String> ALR;
 	public static ArrayList<String> AgeL;
 	public static ArrayList<String> msged;
+	public static ArrayList<String> blocked;
 	static JDA jda;
 	public static boolean memeMode = false;
 	public static void main(String[] args) {
@@ -59,11 +60,12 @@ public class Start extends ListenerAdapter {
 		getAdvisories();
 		getAges();
 		getUsers();
+		getVerified("block.DSC",blocked);
 	}
 
 	private static void reload() {
 		for(Guild temp: jda.getGuilds()) {
-			temp.getSelfMember().modifyNickname("DSC Bot");
+			//	temp.getSelfMember().modifyNickname("DiscordScoutCouncil Bot").queue();
 			List<Ban> bans = temp.retrieveBanList().complete();
 			for(Ban temp2: bans) {
 				addBan(temp2.getUser().getId(), temp2.getReason());
@@ -84,10 +86,10 @@ public class Start extends ListenerAdapter {
 							addUser(temp3.getUser().getId());
 
 							PrivateChannel pc = temp3.getUser().openPrivateChannel().complete();
-							Message msg = pc.sendMessage("Howdy! You just joined a DSC member server (or already did and never received this message). DSC is a network of scouting servers which work together to provide a better and safer expirience for their members. As part of this mission, member servers enforce BSA's Youth Protection Guidelines, and to assist in doing so, many servers allow members to self identify as over or under 18. In an attempt to consodidate this, you may do this here by selecting ➖ for under 18 or ➕ for over 18.").complete();
+							Message msg = pc.sendMessage("Howdy! You just joined a DSC member server (or already did and never received this message). DSC is a network of scouting servers which work together to provide a better and safer expirience for their members. As part of this mission, member servers enforce BSA's Youth Protection Guidelines, and to assist in doing so, many servers allow members to self identify as over or under 18. In an attempt to consodidate this, you may do this here by selecting - for under 18 or + for over 18.\nIf you don't receive a confirmation after selecting one, please type `\\\\age`").complete();
 							pc.addReactionById(msg.getId(), "➕").queue();
 							pc.addReactionById(msg.getId(), "➖").queue();
-							pc.pinMessageById(msg.getId());
+							pc.pinMessageById(msg.getId()).queue();
 						}
 					}
 				}
@@ -153,6 +155,29 @@ public class Start extends ListenerAdapter {
 		else if (msg.toLowerCase().contains("oof") && memeMode)  
 		{
 			channel.sendMessage("stop.").queue();
+		}
+		else if (msg.toLowerCase().contains("neato") && memeMode)
+		{
+			channel.deleteMessageById(message.getId());
+		}
+		else if (msg.equals("\\\\age")) {
+			msged.add(message.getAuthor().getId());
+			addUser(message.getAuthor().getId());
+
+			PrivateChannel pc = message.getAuthor().openPrivateChannel().complete();
+			Message msg2 = pc.sendMessage("Howdy! You just joined a DSC member server (or already did and never received this message). DSC is a network of scouting servers which work together to provide a better and safer expirience for their members. As part of this mission, member servers enforce BSA's Youth Protection Guidelines, and to assist in doing so, many servers allow members to self identify as over or under 18. In an attempt to consodidate this, you may do this here by selecting - for under 18 or + for over 18.\nIf you don't receive a confirmation after selecting one, please type `\\\\age`").complete();
+			pc.addReactionById(msg2.getId(), "➕").queue();
+			pc.addReactionById(msg2.getId(), "➖").queue();
+		}
+		else if (msg.equals("\\\\verify")) {
+			PrivateChannel pc = message.getAuthor().openPrivateChannel().complete();
+			pc.sendMessage("**DSC Verification System:**").queue();
+			pc.sendMessage("*Please read the directions before submitting.\nYou do not need to run `\\verify` again to submit more requests.*").queue();
+			pc.sendMessage("To submit a request, upload a file here. The verification system will accept any file type, but only PDFs and images will be proccessed. PDFs may expirience some delays in processing, using images is prefered.\nPlease censor any personal information from on submitions.\nYour name does not have to be visible on any proof, although some servers prefer that a first or last name (but not both) is visible for verifying YPT. Type `\\verifyreqs` for information on what can be verified and what is need for each.").queue();
+		}else if (msg.equals("\\\\verifyreqs")) {
+			if (channel.getType().equals(ChannelType.PRIVATE)) {
+				channel.sendMessage("For Eagle/Summit/Silver, a patch, knot, medal, certificate, or card will be accepted.\nFor camp staff, a shirt or official name tag will be accepted, if you would like to use an alternative means of verification, please ask a mod first.\nFor YPT, a card or certificate is acceptable.\nFor OA, a lodge flap, sash, card, or are acceptable. You may also submit a screenshot of your roles on SBSA, VBSA, or OA.").queue();
+			}
 		}
 		else if (msg.equals("\\\\reload"))
 		{
@@ -264,8 +289,9 @@ public class Start extends ListenerAdapter {
 			cmds.add(new Field("\\\\stats", "Mostly useless statistics about DSC and DSC bot.", false));
 			cmds.add(new Field("\\\\serverstats", "Statistics about the server.", false));
 			cmds.add(new Field("\\\\servers", "List of DSC servers with invite links.", false));
-			MessageEmbed embed = new MessageEmbed(null, "About DSC and DSC Bot!", "Discord Scout Council, or DSC for short is a coalition of scouting servers which work together to improve their servers and keep members safe. Have a server and want to join? Contact a mod of a member server and they can bring your server up for consideration. DSC Bot is exclusive to DSC member servers and offers member protections such as raid mode and an optional shared ban list.", null, null, 0, new Thumbnail("https://cdn.discordapp.com/attachments/646540745443901472/668954814285217792/1920px-Boy_Scouts_of_the_United_Nations.png", null, 128, 128), null, new AuthorInfo("", null, "", null), null, new Footer("DSC Bot 2.0.0r Build Date: 1/23/2020| Powered By Tfinnm Development", "https://cdn.discordapp.com/attachments/646540745443901472/668954814285217792/1920px-Boy_Scouts_of_the_United_Nations.png", null), null,cmds);
+			MessageEmbed embed = new MessageEmbed(null, "About DSC and DSC Bot!", "Discord Scout Council, or DSC for short is a coalition of scouting servers which work together to improve their servers and keep members safe. Have a server and want to join? Contact a mod of a member server and they can bring your server up for consideration. DSC Bot is exclusive to DSC member servers and offers member protections such as raid mode and an optional shared ban list.", null, null, 0, new Thumbnail("https://cdn.discordapp.com/attachments/646540745443901472/668954814285217792/1920px-Boy_Scouts_of_the_United_Nations.png", null, 128, 128), null, new AuthorInfo("", null, "", null), null, new Footer("DSC Bot 3.0.0r Build Date: 3/5/2020| Powered By Tfinnm Development", "https://cdn.discordapp.com/attachments/646540745443901472/668954814285217792/1920px-Boy_Scouts_of_the_United_Nations.png", null), null,cmds);
 			channel.sendMessage(embed).queue();
+			channel.sendMessage("This menu is being reworked, please be patient with us. :)").queue();
 		}
 		else if (msg.equals("\\\\checkbans"))
 		{
@@ -361,28 +387,47 @@ public class Start extends ListenerAdapter {
 		}
 		else if (msg.startsWith("\\\\clearBan"))
 		{
-			if (message.isFromType(ChannelType.TEXT))
-			{
-				if (message.getMember().getId().equals("213319973756600322")) {
-					List<User> mentionedUsers = message.getMentionedUsers();
-					for (User tempbanuser : mentionedUsers) {
-						if(BL.contains(tempbanuser.getId())) {
-							removeBan(tempbanuser.getId());
-							try {
-								getBans();
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-							channel.sendMessage("Cleared "+tempbanuser.getAsMention()).queue();
+			if (message.getMember().getId().equals("213319973756600322")) {
+				List<User> mentionedUsers = message.getMentionedUsers();
+				for (User tempbanuser : mentionedUsers) {
+					if(BL.contains(tempbanuser.getId())) {
+						removeBan(tempbanuser.getId());
+						try {
+							getBans();
+						} catch (IOException e) {
+							e.printStackTrace();
 						}
+						channel.sendMessage("Cleared "+tempbanuser.getAsMention()).queue();
 					}
-				} else {
-					channel.sendMessage("You are not authorized to do this on this server. [Tfinnm#8609 required]").queue();
 				}
+			} else {
+				channel.sendMessage("You are not authorized to do this on this server. [Tfinnm#8609 required]").queue();
 			}
-			else
-			{
-				channel.sendMessage("This is a Guild-Only command!").queue();
+
+		}
+		else if (msg.startsWith("\\\\clearBlock"))
+		{
+			if (message.getMember().getId().equals("213319973756600322")) {
+				List<User> mentionedUsers = message.getMentionedUsers();
+				for (User tempbanuser : mentionedUsers) {
+					if(blocked.contains(tempbanuser.getId())) {
+						removeVerified(tempbanuser.getId(),"block.DSC",blocked);
+						channel.sendMessage("Cleared "+tempbanuser.getAsMention()).queue();
+					}
+				}
+			} else {
+				channel.sendMessage("You are not authorized to do this on this server. [Tfinnm#8609 required]").queue();
+			}
+		}else if (msg.startsWith("\\\\unverify"))
+		{
+			if (message.getMember().getId().equals("213319973756600322")) {
+				String[] args = msg.split(" ");
+				String id = args[1];
+				Member usr = message.getGuild().getMemberById(id);
+				removeVerified(id,args[2],new ArrayList<String>());
+				channel.sendMessage("Unverified "+usr.getAsMention()).queue();
+			} else {
+				channel.sendMessage("You are not authorized to do this on this server. [Tfinnm#8609 required]").queue();
 			}
 		}
 		else if (msg.startsWith("\\\\clearBanID"))
@@ -509,6 +554,7 @@ public class Start extends ListenerAdapter {
 				//totalMods += temp.getMembersWithRoles(temp.getRolesByName("mod", true)).size();
 			}
 			cmds.add(new Field("Members", String.valueOf(totalMembers), true));
+			cmds.add(new Field("Unique Users", String.valueOf(msged.size()), true));
 			cmds.add(new Field("Channels", String.valueOf(totalChannels), true));
 			cmds.add(new Field("Boosts", String.valueOf(totalBoosts), true));
 			//cmds.add(new Field("\"Mods\"", String.valueOf(totalMods), true));
@@ -542,6 +588,43 @@ public class Start extends ListenerAdapter {
 				cmds.add(new Field("ID", curruser.getId(), true));
 				cmds.add(new Field("Joined Discord", String.valueOf(curruser.getTimeCreated()), true));
 				cmds.add(new Field("Joined Server", String.valueOf(message.getGuild().getMemberById(curruser.getId()).getTimeJoined()), true));
+				String ypt = "";
+				try {
+					if (getVerified("YPT.DSC",new ArrayList<String>()).contains(curruser.getId())) {
+						ypt+="YPT Certified\n";
+					}
+
+					if (AgeL.contains(curruser.getId()+"+")) {
+						ypt+="Over 18";
+					} else if (AgeL.contains(curruser.getId()+"-")) {
+						ypt+="Under 18";
+					} else {
+						ypt+="Age Unknown";
+					}
+					cmds.add(new Field("YPT",ypt,true));
+					String awards = "";
+					if (getVerified("eagle.DSC",new ArrayList<String>()).contains(curruser.getId())) {
+						awards+="Eagle\n";
+					}
+					if (getVerified("summit.DSC",new ArrayList<String>()).contains(curruser.getId())) {
+						awards+="Summit\n";
+					}
+					if (getVerified("vigil.DSC",new ArrayList<String>()).contains(curruser.getId())) {
+						awards+="OA Vigil\n";
+					} else if (getVerified("brotherhood.DSC",new ArrayList<String>()).contains(curruser.getId())) {
+						awards+="OA Brotherhood\n";
+					}else if (getVerified("ordeal.DSC",new ArrayList<String>()).contains(curruser.getId())) {
+						awards+="OA Ordeal\n";
+					}
+					if (getVerified("Camp Staff.DSC",new ArrayList<String>()).contains(curruser.getId())) {
+						awards+="Camp Staff";
+					}
+
+					cmds.add(new Field("Verified Roles",awards,true));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				String roles = "";
 				for(Role temprole: message.getGuild().getMemberById(curruser.getId()).getRoles()) {
 					roles += temprole.getAsMention();
@@ -554,6 +637,9 @@ public class Start extends ListenerAdapter {
 				cmds.add(new Field("DSC Servers", servers,true));
 				int color = 0x33cc33; 
 				String warnmsg = "User is in good standing with DSC.";
+				if (memeMode) {
+					warnmsg = "User is guilty of warcrimes for eating pizza on pineapple.";
+				}
 				if (BL.contains(curruser.getId())) {
 					color = 0xF40C0C;
 					warnmsg =  "User has a current ban on a DSC member server for "+BLR.get(BL.indexOf(curruser.getId()));
@@ -689,7 +775,10 @@ public class Start extends ListenerAdapter {
 		String st; 
 		while ((st = br.readLine()) != null) {
 			System.out.println(st);
-			String st2 = st.split("\\|")[1];
+			String st2 = "";
+			if (st.split("\\|").length > 1) {
+				st2 = st.split("\\|")[1];
+			}
 			st = st.split("\\|")[0];
 			if (st2 == null) {
 				st2 = "";
@@ -879,7 +968,7 @@ public class Start extends ListenerAdapter {
 		}
 		br.close();
 	}
-	
+
 	public static void addUser(String ID) {
 		try {//646545388576178178
 			BufferedReader file = new BufferedReader(new FileReader("users.DSC"));
@@ -900,6 +989,72 @@ public class Start extends ListenerAdapter {
 			FileOutputStream fileOut = new FileOutputStream("users.DSC");
 			fileOut.write(inputBuffer.toString().getBytes());
 			fileOut.close();
+
+		} catch (Exception e) {
+			System.out.println("Problem reading file.");
+		}
+	}
+
+	public static void verify(String ID,String f,ArrayList<String> blocked2) {
+		try {//646545388576178178
+			BufferedReader file = new BufferedReader(new FileReader(f));
+			StringBuffer inputBuffer = new StringBuffer();
+			String line;
+
+			while ((line = file.readLine()) != null) {
+				if (!line.equals(ID)) {
+					inputBuffer.append(line);
+					inputBuffer.append('\n');
+				}
+			}
+			inputBuffer.append(ID);
+			blocked2.add(ID);
+			file.close();
+
+			// write the new string with the replaced line OVER the same file
+			FileOutputStream fileOut = new FileOutputStream(f);
+			fileOut.write(inputBuffer.toString().getBytes());
+			fileOut.close();
+
+		} catch (Exception e) {
+			System.out.println("Problem reading file.");
+		}
+	}
+
+	static ArrayList<String> getVerified(String f, ArrayList<String> arr) throws IOException {
+		File file = new File(f); 
+
+		BufferedReader br = new BufferedReader(new FileReader(file)); 
+		arr = new ArrayList<String>();
+		String st; 
+		while ((st = br.readLine()) != null) {
+			System.out.println(st);
+			arr.add(st);
+		}
+		br.close();
+		return arr;
+	}
+
+	public static void removeVerified(String ID, String f, ArrayList<String> arr) {
+		try {//646545388576178178
+			BufferedReader file = new BufferedReader(new FileReader(f));
+			StringBuffer inputBuffer = new StringBuffer();
+			String line;
+
+			while ((line = file.readLine()) != null) {
+				if (!line.startsWith(ID)) {
+					inputBuffer.append(line);
+					inputBuffer.append('\n');
+				}
+			}
+			file.close();
+
+			// write the new string with the replaced line OVER the same file
+			FileOutputStream fileOut = new FileOutputStream(f);
+			fileOut.write(inputBuffer.toString().getBytes());
+			fileOut.close();
+
+			arr.remove(ID);
 
 		} catch (Exception e) {
 			System.out.println("Problem reading file.");
