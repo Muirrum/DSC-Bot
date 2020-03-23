@@ -60,17 +60,19 @@ public class BanBuddy implements EventListener{
 				}
 			}
 			if (!ageVerified) {
-				if (join.getUser().getId().equals("213319973756600322")) {
+	//			if (join.getUser().getId().equals("213319973756600322")) {
 					if (!Start.msged.contains(join.getUser().getId())) {
 						Start.msged.add(join.getUser().getId());
 						Start.addUser(join.getUser().getId());
-						PrivateChannel pc = join.getUser().openPrivateChannel().complete();
-						Message msg = pc.sendMessage("Howdy! You just joined a DSC member server (or already did and never received this message). DSC is a network of scouting servers which work together to provide a better and safer expirience for their members. As part of this mission, member servers enforce BSA's Youth Protection Guidelines, and to assist in doing so, many servers allow members to self identify as over or under 18. In an attempt to consodidate this, you may do this here by selecting - for under 18 or + for over 18.\nIf you don't receive a confirmation after selecting one, please type `\\\\age`").complete();
+						join.getUser().openPrivateChannel().queue((pc) -> {
+							pc.sendMessage("Howdy! You just joined a DSC member server (or already did and never received this message). DSC is a network of scouting servers which work together to provide a better and safer experience for their members. As part of this mission, member servers enforce BSA's Youth Protection Guidelines, and to assist in doing so, many servers allow members to self identify as over or under 18. In an attempt to consolidate this, you may do this here by selecting - for under 18 or + for over 18.\nIf you don't receive a confirmation after selecting one, please type `\\\\age`.\n This data will be stored, for more information type `\\\\privacy`.").queue(msg -> {
 						pc.addReactionById(msg.getId(), "➕").queue();
 						pc.addReactionById(msg.getId(), "➖").queue();
 						pc.pinMessageById(msg.getId()).queue();
+						});
+						});
 					}
-				}
+	//			}
 			}
 		} else if (event instanceof PrivateMessageReceivedEvent) {
 			PrivateMessageReceivedEvent post = (PrivateMessageReceivedEvent) event;
@@ -81,7 +83,7 @@ public class BanBuddy implements EventListener{
 						TextChannel DSC = Start.jda.getTextChannelById("684577265425973285"); //For use in production.
 						//TextChannel DSC = jda.getTextChannelById("668964814684422184"); //For use in testing.
 						try {
-							Message msg = DSC.sendMessage(post.getAuthor().getId()).addFile(img.downloadToFile().get()).complete();
+							DSC.sendMessage(post.getAuthor().getId()).addFile(img.downloadToFile().get()).queue((msg) -> {
 							DSC.addReactionById(msg.getId(), "🦅").queue(); //Eagle
 							DSC.addReactionById(msg.getId(), "⛰").queue(); //Summit/Silver
 							DSC.addReactionById(msg.getId(), "🏕").queue(); //Camp Staff
@@ -92,6 +94,7 @@ public class BanBuddy implements EventListener{
 							DSC.addReactionById(msg.getId(), "❌").queue(); //close ticket, Do not move past here
 							DSC.addReactionById(msg.getId(), "⚠").queue(); //issue warning
 							DSC.addReactionById(msg.getId(), "⛔").queue(); //block from eVerify
+							});
 						} catch (InterruptedException | ExecutionException e) {
 						}
 						post.getChannel().sendMessage("[Verify] Opened Request.");
@@ -123,56 +126,65 @@ public class BanBuddy implements EventListener{
 				if (react.getReactionEmote().isEmoji() && react.getReactionEmote().getEmoji().equals("🦅")) {
 					String usrid = react.getChannel().retrieveMessageById(react.getMessageId()).complete().getContentDisplay();
 					Start.verify(usrid, "eagle.DSC", new ArrayList<String>());
-					PrivateChannel pc = Start.jda.getUserById(usrid).openPrivateChannel().complete();
+					Start.jda.getUserById(usrid).openPrivateChannel().queue((pc) -> {
 					pc.sendMessage("[Verify] Granted \"Eagle\".").queue();
+					});
 				}
 				if (react.getReactionEmote().isEmoji() && react.getReactionEmote().getEmoji().equals("⛰")) {
 					String usrid = react.getChannel().retrieveMessageById(react.getMessageId()).complete().getContentDisplay();
 					Start.verify(usrid, "summit.DSC", new ArrayList<String>());
-					PrivateChannel pc = Start.jda.getUserById(usrid).openPrivateChannel().complete();
+					Start.jda.getUserById(usrid).openPrivateChannel().queue((pc) -> {
 					pc.sendMessage("[Verify] Granted \"Summit\".").queue();
+					});
 				}
 				if (react.getReactionEmote().isEmoji() && react.getReactionEmote().getEmoji().equals("🏕")) {
 					String usrid = react.getChannel().retrieveMessageById(react.getMessageId()).complete().getContentDisplay();
 					Start.verify(usrid, "Camp Staff.DSC", new ArrayList<String>());
-					PrivateChannel pc = Start.jda.getUserById(usrid).openPrivateChannel().complete();
+					Start.jda.getUserById(usrid).openPrivateChannel().queue((pc) -> {
 					pc.sendMessage("[Verify] Granted \"Camp Staff\".").queue();
+					});
 				}
 				if (react.getReactionEmote().isEmoji() && react.getReactionEmote().getEmoji().equals("🛂")) {
 					String usrid = react.getChannel().retrieveMessageById(react.getMessageId()).complete().getContentDisplay();
 					Start.verify(usrid, "YPT.DSC", new ArrayList<String>());
-					PrivateChannel pc = Start.jda.getUserById(usrid).openPrivateChannel().complete();
+					Start.jda.getUserById(usrid).openPrivateChannel().queue((pc) -> {
 					pc.sendMessage("[Verify] Granted \"YPT\".").queue();
+					});
 				}
 				if (react.getReactionEmote().isEmoji() && react.getReactionEmote().getEmoji().equals("↗")) {
 					String usrid = react.getChannel().retrieveMessageById(react.getMessageId()).complete().getContentDisplay();
 					Start.verify(usrid, "ordeal.DSC", new ArrayList<String>());
-					PrivateChannel pc = Start.jda.getUserById(usrid).openPrivateChannel().complete();
+					Start.jda.getUserById(usrid).openPrivateChannel().queue((pc) -> {
 					pc.sendMessage("[Verify] Granted \"Ordeal\".").queue();
+					});
 				}
 				if (react.getReactionEmote().isEmoji() && react.getReactionEmote().getEmoji().equals("🟥")) {
 					String usrid = react.getChannel().retrieveMessageById(react.getMessageId()).complete().getContentDisplay();
 					Start.verify(usrid, "brotherhood.DSC", new ArrayList<String>());
-					PrivateChannel pc = Start.jda.getUserById(usrid).openPrivateChannel().complete();
+					Start.jda.getUserById(usrid).openPrivateChannel().queue((pc) -> {
 					pc.sendMessage("[Verify] Granted \"Brotherhood\".").queue();
+					});
 				}
 				if (react.getReactionEmote().isEmoji() && react.getReactionEmote().getEmoji().equals("🔺")) {
 					String usrid = react.getChannel().retrieveMessageById(react.getMessageId()).complete().getContentDisplay();
 					Start.verify(usrid, "vigil.DSC", new ArrayList<String>());
-					PrivateChannel pc = Start.jda.getUserById(usrid).openPrivateChannel().complete();
+					Start.jda.getUserById(usrid).openPrivateChannel().queue((pc) -> {
 					pc.sendMessage("[Verify] Granted \"Vigil\".").queue();
+					});
 				}
 				if (react.getReactionEmote().isEmoji() && react.getReactionEmote().getEmoji().equals("❌")) {
 					String usrid = react.getChannel().retrieveMessageById(react.getMessageId()).complete().getContentDisplay();
-					PrivateChannel pc = Start.jda.getUserById(usrid).openPrivateChannel().complete();
+					Start.jda.getUserById(usrid).openPrivateChannel().queue((pc) -> {
 					react.getChannel().deleteMessageById(react.getMessageId()).queue();
 					pc.sendMessage("[Verify] Request Closed.").queue();
+					});
 				}
 				if (react.getReactionEmote().isEmoji() && react.getReactionEmote().getEmoji().equals("⚠") && react.getUserId().equals("213319973756600322")) {
 					String usrid = react.getChannel().retrieveMessageById(react.getMessageId()).complete().getContentDisplay();
-					PrivateChannel pc = Start.jda.getUserById(usrid).openPrivateChannel().complete();
+					Start.jda.getUserById(usrid).openPrivateChannel().queue((pc) -> {
 					react.getChannel().deleteMessageById(react.getMessageId()).queue();
 					pc.sendMessage("[Verify] ⚠ Your request was flagged by a moderator.").queue();
+					});
 				}
 				if (react.getReactionEmote().isEmoji() && react.getReactionEmote().getEmoji().equals("⛔") && react.getUserId().equals("213319973756600322")) {
 					String usrid = react.getChannel().retrieveMessageById(react.getMessageId()).complete().getContentDisplay();
@@ -180,9 +192,10 @@ public class BanBuddy implements EventListener{
 					Start.addAdvisory(usrid, "Abuse of the verification system.");
 					Start.AL.add(usrid);
 					Start.ALR.add("Abuse of the verification system.");
-					PrivateChannel pc = Start.jda.getUserById(usrid).openPrivateChannel().complete();
+					Start.jda.getUserById(usrid).openPrivateChannel().queue((pc) -> {
 					react.getChannel().deleteMessageById(react.getMessageId()).queue();
 					pc.sendMessage("[Verify] ⚠ Your account has been suspended from the verification system.\n\n**Server moderators cannot asist you with this.**\nIf you beleive this was in error, please ask a mod to direct you to a verification system moderator.").queue();
+					});
 				}
 			}
 		}
