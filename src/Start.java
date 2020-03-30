@@ -1,5 +1,4 @@
 //TODO: logging
-//TODO: reaction roles
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -59,9 +58,9 @@ public class Start extends ListenerAdapter {
 		for(Guild temp: jda.getGuilds()) {
 			//	temp.getSelfMember().modifyNickname("DiscordScoutCouncil Bot").queue();
 			temp.retrieveBanList().queue((bans) -> {
-			for(Ban temp2: bans) {
-				addBan(temp2.getUser().getId(), temp2.getReason());
-			}
+				for(Ban temp2: bans) {
+					addBan(temp2.getUser().getId(), temp2.getReason());
+				}
 			});
 			List<Member> memberlist = temp.getMembers();
 			for(Member temp3: memberlist) {
@@ -74,18 +73,18 @@ public class Start extends ListenerAdapter {
 				}
 				if (!ageVerified) {
 					//if (temp3.getUser().getId().equals("213319973756600322")) {
-						if (!msged.contains(temp3.getUser().getId())) {
-							msged.add(temp3.getUser().getId());
-							addUser(temp3.getUser().getId());
+					if (!msged.contains(temp3.getUser().getId())) {
+						msged.add(temp3.getUser().getId());
+						addUser(temp3.getUser().getId());
 
-							temp3.getUser().openPrivateChannel().queue((pc) -> {
+						temp3.getUser().openPrivateChannel().queue((pc) -> {
 							pc.sendMessage("Howdy! You just joined a DSC member server (or already did and never received this message). DSC is a network of scouting servers which work together to provide a better and safer experience for their members. As part of this mission, member servers enforce BSA's Youth Protection Guidelines, and to assist in doing so, many servers allow members to self identify as over or under 18. In an attempt to consolidate this, you may do this here by selecting - for under 18 or + for over 18.\nIf you don't receive a confirmation after selecting one, please type `\\\\age`.\n This data will be stored, for more information type `\\\\privacy`.").queue(msg -> {
-							pc.addReactionById(msg.getId(), "➕").queue();
-							pc.addReactionById(msg.getId(), "➖").queue();
-							pc.pinMessageById(msg.getId()).queue();
+								pc.addReactionById(msg.getId(), "➕").queue();
+								pc.addReactionById(msg.getId(), "➖").queue();
+								pc.pinMessageById(msg.getId()).queue();
 							});
-							});
-						}
+						});
+					}
 					//}
 				}
 			}
@@ -158,7 +157,7 @@ public class Start extends ListenerAdapter {
 		else if (msg.toLowerCase().equals("\\\\privacy"))
 		{
 			message.getAuthor().openPrivateChannel().queue((pc) -> {
-			pc.sendMessage("This bot stores each member's age group (over or under 18) as self-identified by the user in the `\\\\age` menu. This bot also stores any BSA awards or honors submitted through `\\\\verify`. All information stored is assosiated with the user's discord ID. All this information can be found in the YPT and Verified Roles section of `\\\\runUser "+message.getAuthor().getAsMention()+"`. This information is visable to any other members in a server with both you, the user, and this bot. To have information remove or modified, or for any other GDPR related requests, please contact discord user tfinnm#8609 by direct message. To opt out of this data being collected, do not respond to the `\\\\age` dialog (including the one automatically sent) and do not send images as a direct message to this bot.").queue();
+				pc.sendMessage("This bot stores each member's age group (over or under 18) as self-identified by the user in the `\\\\age` menu. This bot also stores any BSA awards or honors submitted through `\\\\verify`. All information stored is assosiated with the user's discord ID. All this information can be found in the YPT and Verified Roles section of `\\\\runUser "+message.getAuthor().getAsMention()+"`. This information is visable to any other members in a server with both you, the user, and this bot. To have information remove or modified, or for any other GDPR related requests, please contact discord user tfinnm#8609 by direct message. To opt out of this data being collected, do not respond to the `\\\\age` dialog (including the one automatically sent) and do not send images as a direct message to this bot.").queue();
 			});
 		}
 		else if (msg.equals("\\\\age")) {
@@ -166,10 +165,10 @@ public class Start extends ListenerAdapter {
 			addUser(message.getAuthor().getId());
 
 			message.getAuthor().openPrivateChannel().queue((pc) -> {
-			pc.sendMessage("Howdy! You just joined a DSC member server (or already did and never received this message). DSC is a network of scouting servers which work together to provide a better and safer experience for their members. As part of this mission, member servers enforce BSA's Youth Protection Guidelines, and to assist in doing so, many servers allow members to self identify as over or under 18. In an attempt to consolidate this, you may do this here by selecting - for under 18 or + for over 18.\nIf you don't receive a confirmation after selecting one, please type `\\\\age`.\n This data will be stored, for more information type `\\\\privacy`.").queue((msg2) -> {
-			pc.addReactionById(msg2.getId(), "➕").queue();
-			pc.addReactionById(msg2.getId(), "➖").queue();
-			});
+				pc.sendMessage("Howdy! You just joined a DSC member server (or already did and never received this message). DSC is a network of scouting servers which work together to provide a better and safer experience for their members. As part of this mission, member servers enforce BSA's Youth Protection Guidelines, and to assist in doing so, many servers allow members to self identify as over or under 18. In an attempt to consolidate this, you may do this here by selecting - for under 18 or + for over 18.\nIf you don't receive a confirmation after selecting one, please type `\\\\age`.\n This data will be stored, for more information type `\\\\privacy`.").queue((msg2) -> {
+					pc.addReactionById(msg2.getId(), "➕").queue();
+					pc.addReactionById(msg2.getId(), "➖").queue();
+				});
 			});
 		}
 		else if (msg.equals("\\\\verify")) {
@@ -177,7 +176,7 @@ public class Start extends ListenerAdapter {
 				pc.sendMessage("**DSC Verification System:**").queue();
 				pc.sendMessage("*Please read the directions before submitting.\nYou do not need to run `\\verify` again to submit more requests.*\n This data will be stored, for more information type `\\\\privacy`.").queue();
 				pc.sendMessage("To submit a request, upload a file here. The verification system will accept any file type, but only PDFs and images will be proccessed. PDFs may experience some delays in processing, using images is prefered.\nPlease censor any personal information from on submitions.\nYour name does not have to be visible on any proof, although some servers prefer that a first or last name (but not both) is visible for verifying YPT. Type `\\verifyreqs` for information on what can be verified and what is need for each.").queue();
-		});
+			});
 		}else if (msg.equals("\\\\verifyreqs")) {
 			if (channel.getType().equals(ChannelType.PRIVATE)) {
 				channel.sendMessage("For Eagle/Summit/Silver, a patch, knot, medal, certificate, or card will be accepted.\nFor camp staff, a shirt or official name tag will be accepted, if you would like to use an alternative means of verification, please ask a mod first.\nFor YPT, a card or certificate is acceptable.\nFor OA, a lodge flap, sash, card, or are acceptable. You may also submit a screenshot of your roles on SBSA, VBSA, or OA.").queue();
@@ -294,7 +293,7 @@ public class Start extends ListenerAdapter {
 			cmds.add(new Field("\\\\serverstats", "Statistics about the server.", false));
 			cmds.add(new Field("\\\\servers", "List of DSC servers with invite links.", false));
 			cmds.add(new Field("\\\\privacy","Privacy and GDPR information.",false));
-			MessageEmbed embed = new MessageEmbed(null, "About DSC and DSC Bot!", "Discord Scout Council, or DSC for short is a coalition of scouting servers which work together to improve their servers and keep members safe. Have a server and want to join? Contact a mod of a member server and they can bring your server up for consideration. DSC Bot is exclusive to DSC member servers and offers member protections such as raid mode and an optional shared ban list.", null, null, 0, new Thumbnail("https://cdn.discordapp.com/attachments/646540745443901472/668954814285217792/1920px-Boy_Scouts_of_the_United_Nations.png", null, 128, 128), null, new AuthorInfo("", null, "", null), null, new Footer("DSC Bot 3.2.1b Build Date: 3/22/2020| Powered By Tfinnm Development", "https://cdn.discordapp.com/attachments/646540745443901472/668954814285217792/1920px-Boy_Scouts_of_the_United_Nations.png", null), null,cmds);
+			MessageEmbed embed = new MessageEmbed(null, "About DSC and DSC Bot!", "Discord Scout Council, or DSC for short is a coalition of scouting servers which work together to improve their servers and keep members safe. Have a server and want to join? Contact a mod of a member server and they can bring your server up for consideration. DSC Bot is exclusive to DSC member servers and offers member protections such as raid mode and an optional shared ban list.", null, null, 0, new Thumbnail("https://cdn.discordapp.com/attachments/646540745443901472/668954814285217792/1920px-Boy_Scouts_of_the_United_Nations.png", null, 128, 128), null, new AuthorInfo("", null, "", null), null, new Footer("DSC Bot 3.2.2r Build Date: 3/22/2020| Powered By Tfinnm Development", "https://cdn.discordapp.com/attachments/646540745443901472/668954814285217792/1920px-Boy_Scouts_of_the_United_Nations.png", null), null,cmds);
 			channel.sendMessage(embed).queue();
 		}
 		else if (msg.equals("\\\\checkbans"))
@@ -484,6 +483,10 @@ public class Start extends ListenerAdapter {
 				channel.sendMessage("This is a Guild-Only command!").queue();
 			}
 		}
+		else if (msg.startsWith("\\") && !msg.startsWith("\\\\"))
+		{
+			
+		}
 		else if (msg.startsWith("\\\\clearAdvisoryID"))
 		{
 			if (message.isFromType(ChannelType.TEXT))
@@ -641,6 +644,18 @@ public class Start extends ListenerAdapter {
 					servers += tempguild.getName() + "\n";
 				}
 				cmds.add(new Field("DSC Servers", servers,true));
+				String Badges = "";
+				try {
+					for(String[] temparr: getBadges()) {
+						if (temparr[0].equals(curruser.getId())) {
+							Badges += temparr[1] + "\n";
+						}
+					}
+					cmds.add(new Field("DSC Badges", Badges,true));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				int color = 0x33cc33; 
 				String warnmsg = "User is in good standing with DSC.";
 				if (memeMode) {
@@ -1025,6 +1040,24 @@ public class Start extends ListenerAdapter {
 		} catch (Exception e) {
 			System.out.println("Problem reading file.");
 		}
+	}
+
+	static ArrayList<String[]> badges;
+
+	static ArrayList<String[]> getBadges() throws IOException {
+		File file = new File("Badges.DSC"); 
+
+		BufferedReader br = new BufferedReader(new FileReader(file)); 
+		badges = new ArrayList<String[]>();
+		String st; 
+		while ((st = br.readLine()) != null) {
+			System.out.println(st);
+			String[] t = st.split("\\|");
+			String[] arr = {t[0],t[1]};
+			badges.add(arr);
+		}
+		br.close();
+		return badges;
 	}
 
 	static ArrayList<String> getVerified(String f, ArrayList<String> arr) throws IOException {
