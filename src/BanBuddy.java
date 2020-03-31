@@ -16,6 +16,8 @@ import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionAddEv
 import net.dv8tion.jda.api.hooks.EventListener;
 
 public class BanBuddy implements EventListener{
+	private String r = "";
+	
 	@Override
 	public void onEvent(GenericEvent event)
 	{
@@ -23,7 +25,11 @@ public class BanBuddy implements EventListener{
 		if(event instanceof GuildBanEvent) {
 			GuildBanEvent ban = (GuildBanEvent) event;
 			System.out.println("BAN: "+ban.getGuild()+" "+ban.getUser().getId());
-			Start.addBan(ban.getUser().getId(),ban.getGuild().retrieveBanById(ban.getUser().getId()).complete().getReason());
+			r = "";
+			ban.getGuild().retrieveBan(ban.getUser()).queue((b) -> {
+				r = b.getReason();
+			});
+			Start.addBan(ban.getUser().getId(),r);
 			try {
 				Start.getBans();
 			} catch (IOException e) {
@@ -32,7 +38,9 @@ public class BanBuddy implements EventListener{
 
 			TextChannel DSC = Start.jda.getTextChannelById("646545388576178178"); //For use in production.
 			//TextChannel DSC = jda.getTextChannelById("668964814684422184"); //For use in testing.
-			MessageEmbed embed = new MessageEmbed(null, "Ban!", "Server: "+ban.getGuild().getName()+"\nName: "+ban.getUser().getAsTag()+"\nID: "+ban.getUser().getId(), null, OffsetDateTime.now(), 0xF40C0C, new Thumbnail(ban.getUser().getEffectiveAvatarUrl(), null, 128, 128), null, new AuthorInfo("", null, "", null), null, new Footer("DSC Bot | Powered By Tfinnm Development", "https://cdn.discordapp.com/attachments/646540745443901472/668954814285217792/1920px-Boy_Scouts_of_the_United_Nations.png", null), null, null);
+			
+			MessageEmbed embed = new MessageEmbed(null, "Ban!", "Server: "+ban.getGuild().getName()+"\nName: "+ban.getUser().getAsTag()+"\nID: "+ban.getUser().getId()+"\nReason: "+r, null, OffsetDateTime.now(), 0xF40C0C, new Thumbnail(ban.getUser().getEffectiveAvatarUrl(), null, 128, 128), null, new AuthorInfo("", null, "", null), null, new Footer("DSC Bot | Powered By Tfinnm Development", "https://cdn.discordapp.com/attachments/646540745443901472/668954814285217792/1920px-Boy_Scouts_of_the_United_Nations.png", null), null, null);
+			
 			DSC.sendMessage(embed).queue();
 		} else if(event instanceof GuildMemberJoinEvent) {
 			GuildMemberJoinEvent join = (GuildMemberJoinEvent) event;

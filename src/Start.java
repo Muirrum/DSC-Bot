@@ -27,6 +27,7 @@ public class Start extends ListenerAdapter {
 	public static ArrayList<String> AgeL;
 	public static ArrayList<String> msged;
 	public static ArrayList<String> blocked;
+	public static ArrayList<String[]> bruhCount = new ArrayList<String[]>(); 
 	static JDA jda;
 	public static boolean memeMode = false;
 	public static void main(String[] args) {
@@ -141,6 +142,17 @@ public class Start extends ListenerAdapter {
 		else if (msg.toLowerCase().contains("bruh") && memeMode)
 		{
 			channel.sendMessage("stop.").queue();
+			boolean found = false;
+			for(String[] s: bruhCount) {
+				if (s[0].equals(message.getAuthor().getId())) {
+					found = true;
+					s[1] = String.valueOf(Integer.parseInt(s[1])+1);
+				}
+			}
+			if (!found) {
+				String[] arr = {message.getAuthor().getId(),"1"};
+				bruhCount.add(arr);
+			}
 		}
 		else if (msg.toLowerCase().contains("scoot") && memeMode)
 		{
@@ -485,7 +497,11 @@ public class Start extends ListenerAdapter {
 		}
 		else if (msg.startsWith("\\") && !msg.startsWith("\\\\"))
 		{
-			
+			channel.sendMessage("TIP: To use DSC bot commands, use two slashes instead of one.");
+		}
+		else if (msg.equals("\\\\MHFA"))
+		{
+			channel.sendMessage("TIP: To use DSC bot commands, use two slashes instead of one.");
 		}
 		else if (msg.startsWith("\\\\clearAdvisoryID"))
 		{
@@ -655,6 +671,15 @@ public class Start extends ListenerAdapter {
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				}
+				if (memeMode) {
+					int c = 0;
+					for(String[] s: bruhCount) {
+						if (s[0].equals(curruser.getId())) {
+							c = Integer.parseInt(s[1]);
+						}
+					}
+					cmds.add(new Field("Bruhs", String.valueOf(c),true));
 				}
 				int color = 0x33cc33; 
 				String warnmsg = "User is in good standing with DSC.";
