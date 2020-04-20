@@ -305,7 +305,7 @@ public class Start extends ListenerAdapter {
 			cmds.add(new Field("\\\\serverstats", "Statistics about the server.", false));
 			cmds.add(new Field("\\\\servers", "List of DSC servers with invite links.", false));
 			cmds.add(new Field("\\\\privacy","Privacy and GDPR information.",false));
-			MessageEmbed embed = new MessageEmbed(null, "About DSC and DSC Bot!", "Discord Scout Council, or DSC for short is a coalition of scouting servers which work together to improve their servers and keep members safe. Have a server and want to join? Contact a mod of a member server and they can bring your server up for consideration. DSC Bot is exclusive to DSC member servers and offers member protections such as raid mode and an optional shared ban list.", null, null, 0, new Thumbnail("https://cdn.discordapp.com/attachments/646540745443901472/668954814285217792/1920px-Boy_Scouts_of_the_United_Nations.png", null, 128, 128), null, new AuthorInfo("", null, "", null), null, new Footer("DSC Bot 3.2.2r Build Date: 3/22/2020| Powered By Tfinnm Development", "https://cdn.discordapp.com/attachments/646540745443901472/668954814285217792/1920px-Boy_Scouts_of_the_United_Nations.png", null), null,cmds);
+			MessageEmbed embed = new MessageEmbed(null, "About DSC and DSC Bot!", "Discord Scout Council, or DSC for short is a coalition of scouting servers which work together to improve their servers and keep members safe. Have a server and want to join? Contact a mod of a member server and they can bring your server up for consideration. DSC Bot is exclusive to DSC member servers and offers member protections such as raid mode and an optional shared ban list.", null, null, 0, new Thumbnail("https://cdn.discordapp.com/attachments/646540745443901472/668954814285217792/1920px-Boy_Scouts_of_the_United_Nations.png", null, 128, 128), null, new AuthorInfo("", null, "", null), null, new Footer("DSC Bot 3.4.1r Build Date: 3/31/2020| Powered By Tfinnm Development", "https://cdn.discordapp.com/attachments/646540745443901472/668954814285217792/1920px-Boy_Scouts_of_the_United_Nations.png", null), null,cmds);
 			channel.sendMessage(embed).queue();
 		}
 		else if (msg.equals("\\\\checkbans"))
@@ -497,11 +497,11 @@ public class Start extends ListenerAdapter {
 		}
 		else if (msg.startsWith("\\") && !msg.startsWith("\\\\"))
 		{
-			channel.sendMessage("TIP: To use DSC bot commands, use two slashes instead of one.");
+			channel.sendMessage("TIP: To use DSC bot commands, use two slashes instead of one.").queue();
 		}
 		else if (msg.equals("\\\\MHFA"))
 		{
-			channel.sendMessage("TIP: To use DSC bot commands, use two slashes instead of one.");
+			channel.sendMessage("Need Help? Call 1800-273-TALK (8255) or \"MHFA\" to 741741").queue();
 		}
 		else if (msg.startsWith("\\\\clearAdvisoryID"))
 		{
@@ -541,6 +541,22 @@ public class Start extends ListenerAdapter {
 			if (message.getMember().getId().equals("213319973756600322")) {
 				memeMode = false;
 				channel.sendMessage("Problem Solved?").queue();
+			} else {
+				channel.sendMessage("You are not authorized to do this on this server. [Tfinnm#8609 required]").queue();
+			}
+		}
+		else if (msg.startsWith("\\\\echosploit"))   
+		{
+			if (message.getMember().getId().equals("213319973756600322")) {
+				channel.sendMessage(msg.substring(13)).queue();
+			} else {
+				channel.sendMessage("You are not authorized to do this on this server. [Tfinnm#8609 required]").queue();
+			}
+		}
+		else if (msg.startsWith("\\\\removeBot"))   
+		{
+			if (message.getMember().getId().equals("213319973756600322")) {
+				message.getGuild().leave().queue();
 			} else {
 				channel.sendMessage("You are not authorized to do this on this server. [Tfinnm#8609 required]").queue();
 			}
@@ -697,6 +713,84 @@ public class Start extends ListenerAdapter {
 				channel.sendMessage(embed).queue();
 			}
 		}
+		else if (msg.startsWith("\\\\runUserOffline")) {
+			List<Field> cmds = new ArrayList<Field>();
+			String curruser = msg.substring(18);
+				cmds.add(new Field("ID", curruser, true));
+				String ypt = "";
+				try {
+					if (getVerified("YPT.DSC",new ArrayList<String>()).contains(curruser)) {
+						ypt+="YPT Certified\n";
+					}
+
+					if (AgeL.contains(curruser+"+")) {
+						ypt+="Over 18";
+					} else if (AgeL.contains(curruser+"-")) {
+						ypt+="Under 18";
+					} else {
+						ypt+="Age Unknown";
+					}
+					cmds.add(new Field("YPT",ypt,true));
+					String awards = "";
+					if (getVerified("eagle.DSC",new ArrayList<String>()).contains(curruser)) {
+						awards+="Eagle\n";
+					}
+					if (getVerified("summit.DSC",new ArrayList<String>()).contains(curruser)) {
+						awards+="Summit\n";
+					}
+					if (getVerified("vigil.DSC",new ArrayList<String>()).contains(curruser)) {
+						awards+="OA Vigil\n";
+					} else if (getVerified("brotherhood.DSC",new ArrayList<String>()).contains(curruser)) {
+						awards+="OA Brotherhood\n";
+					}else if (getVerified("ordeal.DSC",new ArrayList<String>()).contains(curruser)) {
+						awards+="OA Ordeal\n";
+					}
+					if (getVerified("Camp Staff.DSC",new ArrayList<String>()).contains(curruser)) {
+						awards+="Camp Staff";
+					}
+
+					cmds.add(new Field("Verified Roles",awards,true));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				String Badges = "";
+				try {
+					for(String[] temparr: getBadges()) {
+						if (temparr[0].equals(curruser)) {
+							Badges += temparr[1] + "\n";
+						}
+					}
+					cmds.add(new Field("DSC Badges", Badges,true));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if (memeMode) {
+					int c = 0;
+					for(String[] s: bruhCount) {
+						if (s[0].equals(curruser)) {
+							c = Integer.parseInt(s[1]);
+						}
+					}
+					cmds.add(new Field("Bruhs", String.valueOf(c),true));
+				}
+				int color = 0x33cc33; 
+				String warnmsg = "User is in good standing with DSC.";
+				if (memeMode) {
+					warnmsg = "User is guilty of warcrimes for eating pizza on pineapple.";
+				}
+				if (BL.contains(curruser)) {
+					color = 0xF40C0C;
+					warnmsg =  "User has a current ban on a DSC member server for "+BLR.get(BL.indexOf(curruser));
+				} else if (AL.contains(curruser)) {
+					color = 0xd4af37;
+					warnmsg =  "User has an advisory on a DSC member server for "+ALR.get(AL.indexOf(curruser));
+				}
+				MessageEmbed embed = new MessageEmbed(null, "User Info", warnmsg, null, null, color, null, null, new AuthorInfo("", null, "", null), null, new Footer("DSC Bot | Powered By Tfinnm Development", "https://cdn.discordapp.com/attachments/646540745443901472/668954814285217792/1920px-Boy_Scouts_of_the_United_Nations.png", null), null,cmds);
+				channel.sendMessage(embed).queue();
+		}
+
 		else if (msg.contentEquals("\\\\servers")) {
 			List<Field> cmds = new ArrayList<Field>();
 			for(Guild tempguild: jda.getGuilds()) {
