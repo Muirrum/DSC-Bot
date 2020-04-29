@@ -1,3 +1,7 @@
+/*
+ *   Copyright (c) 2020 Owen Salter <owen@devosmium.xyz>
+ *   All rights reserved.
+ */
 package xyz.devosmium.dscbot;
 
 //TODO: logging
@@ -46,6 +50,8 @@ public class Start extends ListenerAdapter {
 	}
 
 	private static void loadJDA() throws LoginException, InterruptedException {
+		Map<String, String> env = System.getenv();
+		jda = new JDABuilder(env.get("DISCORD_TOKEN")).addEventListeners(new Start()).addEventListeners(new BanBuddy()).setActivity(Activity.watching("DSC Member Servers")).setStatus(OnlineStatus.ONLINE).build();
 		jda.awaitReady();
 	}
 
